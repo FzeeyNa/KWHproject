@@ -29,7 +29,7 @@
                 <ul class="navbar-nav me-auto"></ul>
                 <div class="d-flex gap-2">
                     <a href="/register" class="btn btn-outline-primary px-4">Daftar</a>
-                    <a href="/login" class="btn btn-primary px-4">Masuk</a>
+                    <a href="{{ route('login') }}" class="btn btn-primary px-4">Masuk</a>
                 </div>
             </div>
         </div>
