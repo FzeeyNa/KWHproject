@@ -48,6 +48,15 @@
                         @enderror
                     </div>
 
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input id="remember" name="remember" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="remember" class="ml-2 block text-sm text-gray-900">
+                                Remember me for 30 days
+                            </label>
+                        </div>
+                    </div>
+
                     @if(session('error'))
                         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                             <span class="block sm:inline">{{ session('error') }}</span>

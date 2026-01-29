@@ -31,7 +31,7 @@ class AuthController extends Controller
             "username" => "nullable|unique:users",
         ]);
 
-        DB::table("users")->insert([
+        $user = DB::table("users")->insertGetId([
             "name" => $request->name,
             "email" => $request->email,
             "password" => Hash::make($request->password), // Password di-hash agar aman
@@ -40,9 +40,12 @@ class AuthController extends Controller
             "updated_at" => now(),
         ]);
 
+        // Auto login after registration
+        Auth::loginUsingId($user, true); // true = remember me
+
         return redirect()
-            ->route("login")
-            ->with("success", "Pendaftaran berhasil! Silahkan login.");
+            ->route("dashboard")
+            ->with("success", "Pendaftaran berhasil! Selamat datang di UhuY.");
     }
 
     // Proses Login
@@ -54,9 +57,16 @@ class AuthController extends Controller
         ]);
 
         $credentials = $request->only("email", "password");
+        $remember = $request->boolean("remember", false);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
+
+            // Extend session for remember me
+            if ($remember) {
+                config(["session.lifetime" => 43200]);
+            }
+
             return redirect()->intended("/dashboard");
         }
 
