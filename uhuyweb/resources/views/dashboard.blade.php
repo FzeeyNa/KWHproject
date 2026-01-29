@@ -154,7 +154,7 @@
                 </div>
                 <i class="fas fa-compass text-3xl text-purple-200"></i>
             </div>
-            <a href="{{ route('home') }}" class="inline-flex items-center bg-white text-purple-600 px-4 py-2 rounded-full font-medium hover:bg-purple-50 transition-colors duration-200">
+            <a href="{{ route('explore.explore') }}" class="inline-flex items-center bg-white text-purple-600 px-4 py-2 rounded-full font-medium hover:bg-purple-50 transition-colors duration-200">
                 <i class="fas fa-compass mr-2"></i>
                 Jelajahi
             </a>

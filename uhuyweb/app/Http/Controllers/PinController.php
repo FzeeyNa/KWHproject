@@ -216,4 +216,15 @@ class PinController extends Controller
 
         return response()->json($pins);
     }
+
+    // app/Http/Controllers/PinController.php
+    public function explore()
+    {
+        // Mengambil semua pin, menyertakan data user (eager loading), 
+        // diurutkan dari yang terbaru, dan dipaginasi 20 item per halaman.
+        $pins = \App\Models\Pin::with('user')->latest()->paginate(20);
+
+        // Pastikan path view sesuai dengan folder Anda: resources/views/explore/explore.blade.php
+        return view('explore.explore', compact('pins'));
+    }
 }

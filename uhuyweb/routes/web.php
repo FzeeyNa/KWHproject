@@ -130,3 +130,8 @@ Route::get("/search", [
     App\Http\Controllers\PinController::class,
     "search",
 ])->name("pins.search");
+
+Route::get("/explore", [
+    App\Http\Controllers\PinController::class, 
+    "explore"
+])->name("explore.explore");
