@@ -18,7 +18,7 @@
                     </div>
                     <span class="text-2xl font-bold text-blue-600">UhuY</span>
                 </div>
-                
+
                 <div class="flex items-center space-x-4">
                     <a href="{{ route('login') }}" class="px-4 py-2 text-blue-600 font-medium hover:text-blue-700 transition">
                         Sign In
@@ -39,11 +39,11 @@
                     <i class="fas fa-images text-white text-5xl"></i>
                 </div>
             </div>
-            
+
             <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
                 Welcome to <span class="text-blue-600">UhuY</span>
             </h1>
-            
+
             <p class="text-xl md:text-2xl text-gray-700 mb-8 leading-relaxed">
                 Share your inspiration, discover amazing ideas, and connect with creative minds around the world.
             </p>
@@ -54,13 +54,13 @@
                     <h3 class="text-lg font-bold text-gray-900 mb-2">Share Pins</h3>
                     <p class="text-gray-600">Upload and share your favorite content with the community</p>
                 </div>
-                
+
                 <div class="bg-white rounded-lg shadow-lg p-6">
                     <div class="text-blue-600 text-3xl mb-4"><i class="fas fa-heart"></i></div>
                     <h3 class="text-lg font-bold text-gray-900 mb-2">Like & Save</h3>
                     <p class="text-gray-600">Collect and organize your favorite pins into boards</p>
                 </div>
-                
+
                 <div class="bg-white rounded-lg shadow-lg p-6">
                     <div class="text-blue-600 text-3xl mb-4"><i class="fas fa-users"></i></div>
                     <h3 class="text-lg font-bold text-gray-900 mb-2">Connect</h3>
@@ -88,11 +88,6 @@
         </div>
     </footer>
 
-    <script>
-        // Redirect to dashboard if already logged in
-        if (localStorage.getItem('token')) {
-            window.location.href = '/dashboard';
-        }
-    </script>
+
 </body>
 </html>

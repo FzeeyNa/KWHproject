@@ -23,46 +23,73 @@
             <!-- Register Form -->
             <div class="bg-white rounded-lg shadow-xl p-8">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">Create Account</h2>
-                
-                <form class="space-y-4" id="registerForm">
+
+                <form class="space-y-4" method="POST" action="{{ route('register.post') }}">
                     @csrf
-                    
+
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                        <input id="name" name="name" type="text" required 
+                        <input id="name" name="name" type="text" required
                             placeholder="Enter your full name"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                            value="{{ old('name') }}"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition {{ $errors->has('name') ? 'border-red-500' : '' }}">
+                        @error('name')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
-                        <label for="username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
-                        <input id="username" name="username" type="text" required 
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-2">Username (Optional)</label>
+                        <input id="username" name="username" type="text"
                             placeholder="Create a username"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                            value="{{ old('username') }}"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition {{ $errors->has('username') ? 'border-red-500' : '' }}">
+                        @error('username')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                        <input id="email" name="email" type="email" required 
+                        <input id="email" name="email" type="email" required
                             placeholder="Enter your email"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                            value="{{ old('email') }}"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition {{ $errors->has('email') ? 'border-red-500' : '' }}">
+                        @error('email')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
                         <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <input id="password" name="password" type="password" required 
-                            placeholder="Create a password (min 8 characters)"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                        <input id="password" name="password" type="password" required
+                            placeholder="Create a password (min 6 characters)"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition {{ $errors->has('password') ? 'border-red-500' : '' }}">
+                        @error('password')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
                         <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
-                        <input id="password_confirmation" name="password_confirmation" type="password" required 
+                        <input id="password_confirmation" name="password_confirmation" type="password" required
                             placeholder="Confirm your password"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                     </div>
 
-                    <button type="submit" 
+                    @if(session('error'))
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                            <span class="block sm:inline">{{ session('error') }}</span>
+                        </div>
+                    @endif
+
+                    @if(session('success'))
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                            <span class="block sm:inline">{{ session('success') }}</span>
+                        </div>
+                    @endif
+
+                    <button type="submit"
                         class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 flex items-center justify-center">
                         <i class="fas fa-user-plus mr-2"></i> Create Account
                     </button>
@@ -84,67 +111,28 @@
     </div>
 
     <script>
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // Auto-hide flash messages after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('[role="alert"]');
+            alerts.forEach(function(alert) {
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.remove();
+                }, 300);
+            });
+        }, 5000);
 
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                username: document.getElementById('username').value,
-                password: document.getElementById('password').value,
-                password_confirmation: document.getElementById('password_confirmation').value,
-            };
+        // Password confirmation validation
+        document.getElementById('password_confirmation').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
 
-            try {
-                const response = await fetch('/api/auth/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-                        'Accept': 'application/json',
-                    },
-                    body: JSON.stringify(formData),
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    
-                    await Swal.fire({
-                        icon: 'success',
-                        title: 'Account Created!',
-                        text: 'Redirecting to dashboard...',
-                        timer: 1500,
-                        showConfirmButton: false,
-                        didClose: () => {
-                            window.location.href = '/dashboard';
-                        }
-                    });
-                } else {
-                    if (data.errors) {
-                        const firstError = Object.values(data.errors)[0][0];
-                        await Swal.fire({
-                            icon: 'error',
-                            title: 'Registration Failed!',
-                            text: firstError,
-                        });
-                    } else {
-                        await Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: data.message || 'Registration failed',
-                        });
-                    }
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                await Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'An error occurred. Please try again.',
-                });
+            if (confirmPassword && password !== confirmPassword) {
+                this.classList.add('border-red-500');
+                this.setCustomValidity('Passwords do not match');
+            } else {
+                this.classList.remove('border-red-500');
+                this.setCustomValidity('');
             }
         });
     </script>

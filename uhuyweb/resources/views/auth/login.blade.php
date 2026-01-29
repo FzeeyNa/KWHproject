@@ -23,25 +23,44 @@
             <!-- Login Form -->
             <div class="bg-white rounded-lg shadow-xl p-8">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">Welcome Back</h2>
-                
-                <form class="space-y-4" id="loginForm">
+
+                <form class="space-y-4" method="POST" action="{{ route('login.post') }}">
                     @csrf
-                    
+
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                        <input id="email" name="email" type="email" required 
+                        <input id="email" name="email" type="email" required
                             placeholder="Enter your email"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                            value="{{ old('email') }}"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition {{ $errors->has('email') ? 'border-red-500' : '' }}">
+                        @error('email')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
                         <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <input id="password" name="password" type="password" required 
+                        <input id="password" name="password" type="password" required
                             placeholder="Enter your password"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition {{ $errors->has('password') ? 'border-red-500' : '' }}">
+                        @error('password')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    <button type="submit" 
+                    @if(session('error'))
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                            <span class="block sm:inline">{{ session('error') }}</span>
+                        </div>
+                    @endif
+
+                    @if(session('success'))
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                            <span class="block sm:inline">{{ session('success') }}</span>
+                        </div>
+                    @endif
+
+                    <button type="submit"
                         class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 flex items-center justify-center">
                         <i class="fas fa-sign-in-alt mr-2"></i> Sign In
                     </button>
@@ -63,64 +82,16 @@
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            try {
-                const response = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-                        'Accept': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: email,
-                        password: password,
-                    }),
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    
-                    await Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'Logging in...',
-                        timer: 1500,
-                        showConfirmButton: false,
-                        didClose: () => {
-                            window.location.href = '/dashboard';
-                        }
-                    });
-                } else {
-                    let errorMessage = data.message || 'Login failed';
-                    
-                    if (data.errors && data.errors.email) {
-                        errorMessage = data.errors.email[0];
-                    }
-
-                    await Swal.fire({
-                        icon: 'error',
-                        title: 'Login Failed!',
-                        text: errorMessage,
-                    });
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                await Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'An error occurred. Please try again.',
-                });
-            }
-        });
+        // Auto-hide flash messages after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('[role="alert"]');
+            alerts.forEach(function(alert) {
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.remove();
+                }, 300);
+            });
+        }, 5000);
     </script>
 </body>
 </html>
